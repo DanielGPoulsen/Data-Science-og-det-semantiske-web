@@ -1,0 +1,12 @@
+#DROP TABLE movies;
+CREATE DATABASE moviesRewards;
+USE moviesRewards;
+CREATE TABLE movies (movie_id int not null auto_increment,
+					title VARCHAR(80),
+                    actors VARCHAR(255),
+					ratings VARCHAR(100),
+					genre VARCHAR(80),
+                    rewards VARCHAR(100),
+					PRIMARY KEY (movie_id) );
+
+SELECT * FROM movies;
