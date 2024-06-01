@@ -1,9 +1,13 @@
+from json import *
+from urllib.request import *
 import mysql.connector
 
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="daniel123"
+  password="daniel123",
+  database = "python1"
 )
+API_KEY = "SYdDF0nfGBDf4mfKBmC-Ud1KixtChuMDB5KrQulvLocGLSWs"
 
 print(mydb) ## if no errors, then connection was successful!
