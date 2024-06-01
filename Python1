@@ -2,17 +2,59 @@ from json import *
 from urllib.request import *
 import mysql.connector
 
-import ssl as ssl
-context = ssl.create_default_context()
-context.check_hostname = False
-context.verify_mode = ssl.CERT_NONE
+
 
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="daniel123",
+  password="JokkeSQL",
   database = "moviesRewards"
 )
 
+API_KEY = "9bc07146"
 
-print(mydb) ## if no errors, then connection was successful!
+title = "Avatar"
+request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
+data = request.read().decode('utf-8')
+the_data1 = loads(data) 
+print(the_data1)
+
+title = "Avengers"
+request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
+data = request.read().decode('utf-8')
+the_data2 = loads(data)
+print(the_data2)
+
+title = "Lord%20of%20the%20Rings"
+request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
+data = request.read().decode('utf-8')
+the_data3 = loads(data)
+print(the_data3)
+
+mycursor = mydb.cursor()
+
+sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
+val = (the_data1["Title"],the_data1["Actors"],
+          the_data1["Ratings"][0]["Value"],the_data1["Genre"],the_data1["Awards"])
+mycursor.execute(sql, val)
+mydb.commit()
+
+print("1 record inserted, ID:", mycursor.lastrowid)
+
+sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
+val = (the_data2["Title"],the_data2["Actors"],
+          the_data2["Ratings"][0]["Value"],the_data2["Genre"],the_data2["Awards"])
+mycursor.execute(sql, val)
+mydb.commit() 
+
+print("1 record inserted, ID:", mycursor.lastrowid)
+
+sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
+val = (the_data3["Title"],the_data3["Actors"],
+          the_data3["Ratings"][0]["Value"],the_data3["Genre"],the_data3["Awards"])
+mycursor.execute(sql, val)
+mydb.commit()
+
+print("1 record inserted, ID:", mycursor.lastrowid)
+
+#print(mydb) ## if no errors, then connection was successful!
