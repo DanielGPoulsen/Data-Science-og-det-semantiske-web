@@ -2,12 +2,17 @@ from json import *
 from urllib.request import *
 import mysql.connector
 
+import ssl as ssl
+context = ssl.create_default_context()
+context.check_hostname=False
+context.verify_mode = ssl.CERT_NONE
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
   password="daniel123",
-  database = "python1"
+  database = "movieRewards"
 )
-API_KEY = "SYdDF0nfGBDf4mfKBmC-Ud1KixtChuMDB5KrQulvLocGLSWs"
+
 
 print(mydb) ## if no errors, then connection was successful!
