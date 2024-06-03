@@ -1,10 +1,12 @@
 from json import *
 from urllib.request import *
 import mysql.connector
+import ssl as ssl
+context = ssl.create_default_context()
+context.check_hostname=False
+context.verify_mode = ssl.CERT_NONE
 
-
-
-mydb = mysql.connector.connect(
+my_db = mysql.connector.connect(
   host="localhost",
   user="root",
   password="JokkeSQL",
@@ -12,32 +14,51 @@ mydb = mysql.connector.connect(
 )
 
 API_KEY = "9bc07146"
-
+###########
 title = "Avatar"
 request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
 data = request.read().decode('utf-8')
 the_data1 = loads(data) 
+print("All the data from the WebAPI:")
 print(the_data1)
+print()
 
 title = "Avengers"
 request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
 data = request.read().decode('utf-8')
 the_data2 = loads(data)
+print("All the data from the WebAPI:")
 print(the_data2)
+print()
 
 title = "Lord%20of%20the%20Rings"
 request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
 data = request.read().decode('utf-8')
 the_data3 = loads(data)
+print("All the data from the WebAPI:")
 print(the_data3)
+print()
+###########
+key_values = ["Title", "Actors", "Ratings", "Genre", "Awards"]
+data1 = {key: the_data1[key] for key in key_values }
+print(data1)
+print()
 
-mycursor = mydb.cursor()
+data2 = {key: the_data2[key] for key in key_values }
+print(data2)
+print()
+
+data3 = {key: the_data3[key] for key in key_values }
+print(data3)
+print()
+###########
+mycursor = my_db.cursor()
 
 sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (the_data1["Title"],the_data1["Actors"],
           the_data1["Ratings"][0]["Value"],the_data1["Genre"],the_data1["Awards"])
 mycursor.execute(sql, val)
-mydb.commit()
+my_db.commit()
 
 print("1 record inserted, ID:", mycursor.lastrowid)
 
@@ -45,7 +66,7 @@ sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (the_data2["Title"],the_data2["Actors"],
           the_data2["Ratings"][0]["Value"],the_data2["Genre"],the_data2["Awards"])
 mycursor.execute(sql, val)
-mydb.commit() 
+my_db.commit() 
 
 print("1 record inserted, ID:", mycursor.lastrowid)
 
@@ -53,8 +74,8 @@ sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (the_data3["Title"],the_data3["Actors"],
           the_data3["Ratings"][0]["Value"],the_data3["Genre"],the_data3["Awards"])
 mycursor.execute(sql, val)
-mydb.commit()
+my_db.commit()
 
 print("1 record inserted, ID:", mycursor.lastrowid)
 
-#print(mydb) ## if no errors, then connection was successful!
+#print(my_db) ## if no errors, then connection was successful!
