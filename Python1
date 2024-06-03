@@ -21,6 +21,7 @@ data = request.read().decode('utf-8')
 the_data1 = loads(data) 
 print("All the data about", the_data1["Title"], "from the WebAPI")
 print(the_data1)
+
 print()
 
 title = "Avengers"
@@ -29,6 +30,7 @@ data = request.read().decode('utf-8')
 the_data2 = loads(data)
 print("All the data about", the_data2["Title"], " from the WebAPI:")
 print(the_data2)
+
 print()
 
 title = "Lord%20of%20the%20Rings"
@@ -37,6 +39,7 @@ data = request.read().decode('utf-8')
 the_data3 = loads(data)
 print("All the data about", the_data3["Title"], " from the WebAPI:")
 print(the_data3)
+
 print()
 ###########
 key_values = ["Title", "Actors", "Ratings", "Genre", "Awards"]
@@ -44,42 +47,53 @@ key_values = ["Title", "Actors", "Ratings", "Genre", "Awards"]
 data1 = {key: the_data1[key] for key in key_values }
 print("This is the data we want from", the_data1["Title"],"in our database:")
 print(data1)
+
 print()
 
 data2 = {key: the_data2[key] for key in key_values }
 print("This is the data we want from", the_data2["Title"],"in our database:")
 print(data2)
+
 print()
 
 data3 = {key: the_data3[key] for key in key_values }
 print("This is the data we want from", the_data3["Title"],"in our database:")
 print(data3)
+
 print()
 ###########
-mycursor = my_db.cursor()
+cursor = my_db.cursor()
 
 sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (data1["Title"],data1["Actors"],
           data1["Ratings"][0]["Value"],data1["Genre"],data1["Awards"])
-mycursor.execute(sql, val)
+cursor.execute(sql, val)
 my_db.commit()
 
-print("The movie", data1["Title"],"has been inserted under ID:", mycursor.lastrowid)
+print("The movie", data1["Title"],"has been inserted under ID:", cursor.lastrowid)
 
 sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (data2["Title"],data2["Actors"],
           data2["Ratings"][0]["Value"],data2["Genre"],data2["Awards"])
-mycursor.execute(sql, val)
+cursor.execute(sql, val)
 my_db.commit() 
 
-print("The movie", data2["Title"],"has been inserted under ID:", mycursor.lastrowid)
+print("The movie", data2["Title"],"has been inserted under ID:", cursor.lastrowid)
 
 sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
 val = (data3["Title"],data3["Actors"],
           data3["Ratings"][0]["Value"],data3["Genre"],data3["Awards"])
-mycursor.execute(sql, val)
+cursor.execute(sql, val)
 my_db.commit()
 
-print("The movie", data3["Title"],"has been inserted under ID:", mycursor.lastrowid)
+print("The movie", data3["Title"],"has been inserted under ID:", cursor.lastrowid)
 
-#print(my_db) ## if no errors, then connection was successful!
+print()
+
+###########
+cursor.execute("SELECT * FROM movies")
+values_in_db = cursor.fetchall()
+
+print("So far, the database contains this data:")
+for x in values_in_db:
+  print(x)
