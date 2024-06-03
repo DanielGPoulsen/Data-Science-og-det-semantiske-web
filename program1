@@ -14,7 +14,7 @@ my_db = mysql.connector.connect(
 )
 
 API_KEY = "9bc07146"
-###########
+########### request to WebAPI
 title = "Avatar"
 request = urlopen("http://www.omdbapi.com/?t=" + title + "&rewards=short&apikey=" + API_KEY)
 data = request.read().decode('utf-8')
@@ -41,7 +41,7 @@ print("All the data about", the_data3["Title"], " from the WebAPI:")
 print(the_data3)
 
 print()
-###########
+########### Filter reguests
 key_values = ["Title", "Actors", "Ratings", "Genre", "Awards"]
 
 data1 = {key: the_data1[key] for key in key_values }
@@ -61,7 +61,7 @@ print("This is the data we want from", the_data3["Title"],"in our database:")
 print(data3)
 
 print()
-###########
+########### Insert into database
 cursor = my_db.cursor()
 
 sql = "INSERT INTO movies VALUES (null, %s, %s, %s, %s, %s)"
@@ -90,7 +90,7 @@ print("The movie", data3["Title"],"has been inserted under ID:", cursor.lastrowi
 
 print()
 
-###########
+########### Check data in database
 cursor.execute("SELECT * FROM movies")
 values_in_db = cursor.fetchall()
 
