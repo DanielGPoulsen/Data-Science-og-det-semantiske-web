@@ -1,10 +1,9 @@
 from dash import Dash, html, dash_table
 import pandas as pd
-import plotly.express as px
-from json import *
-from urllib.request import *
 from medialib import *
-from csv import *
+initialize()
+
+
 import mysql.connector
 import ssl as ssl
 context = ssl.create_default_context()
@@ -17,29 +16,61 @@ my_db = mysql.connector.connect(
   password="JokkeSQL",
   database = "moviesRewards"
 )
+
 mycursor = my_db.cursor()
 mycursor.execute("SELECT * FROM movies")
 myresult = mycursor.fetchall()
+
 for x in myresult:
   print(x)
-cursor = db.cursor()
+data =[]
+for row in myresult:
+  data.append( list(row) )
 
-# Forespørgsel for at hente filmdataene
-cursor.execute("SELECT title, genre, awards, actors, ratings FROM movies")
+print(data)
 
-# Hent alle rækker
-movies = cursor.fetchall()
+genre_counts = {}
 
-# Luk forbindelsen
-cursor.close()
-db.close()
+# Loop through the data (skipping the header)
+for record in data[1:]:
+    genres = record[4].split(', ')
+    for genre in genres:
+        if genre in genre_counts:
+            genre_counts[genre] += 1
+        else:
+            genre_counts[genre] = 1
 
-# Opret en tabel ved hjælp af medialib
-table = Table()
-table.add_header("Title", "Genre", "Release Year", "Director")
+# Print the genre counts
+for genre, count in genre_counts.items():
+    print(f"{genre}: {count}")
 
-for movie in movies:
-    table.add_row(*movie)
+def draw_horizontal_bar(value, x, y, bar_breadth, bar_length, r, g, b):
+    # Draw the horizontal bar (rectangle)
+    rect(x, y, bar_length, bar_breadth, r, g, b)
 
-# Print tabellen
-print(table)
+    # Draw the text
+    value_str = "{:.3f}".format(value)  # convert the value to str (3 decimal points)
+    text_x = x + bar_length + 10  # calculate the top-left coordinates of the text
+    text_y = y
+    text(value_str, text_x, text_y, bar_breadth, r, g, b)
+#rect(10,15,100,40)
+origin_x = 100  # the top-left coordinates of the first bar, all the bars have the same x,
+origin_y = 100  # but the y coordinates should be calculated
+bar_interval = 30  # distance between 2 neighboring bars ()
+bar_max_length = 600  # a bar of max value 2.000 will have a max length 600
+bar_max_value = 2.000  # you need to calculate the length of each bar as value / max_value * max_lengh
+bar_breadth = 30  # breadth of each bar
+bar_color = [255, 255, 0]  # color of the data bar and text (yellow), you can change as you like
+bar_color_average = [135, 206, 235]
+#####
+print("Draw the first bar, value={}".format(data[0]))
+bar_length = genre_counts[genre] / bar_max_value * bar_max_length  # calculate the bar's length
+x = origin_x
+y = origin_y
+# call draw_horizontal_bar function to draw the bar and text
+draw_horizontal_bar(genre_counts[genre], x, y, bar_breadth, bar_length, bar_color[0], bar_color[1], bar_color[2])
+wait_mouse_leftclick()
+
+text("Click to finish",200,500,16)
+wait_mouse_leftclick()
+all_done()
