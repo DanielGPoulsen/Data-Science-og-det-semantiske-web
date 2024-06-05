@@ -1,15 +1,43 @@
+from dash import Dash, html, dash_table
+import pandas as pd
+
 from json import *
 from urllib.request import *
 from csv import *
+import mysql.connector
+import ssl as ssl
+context = ssl.create_default_context()
+context.check_hostname=False
+context.verify_mode = ssl.CERT_NONE
 
-API_KEY = "c70a3d52fc7036b3da3d159ef096fea0" # change it to your API_KEY ;)
-city = "Odense,DK"
-request = urlopen("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + API_KEY)
-my_data = request.read().decode('utf-8')
-my_data_dict = loads(my_data)
+my_db = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="JokkeSQL",
+  database = "moviesRewards"
+)
 
-# eksempel på en barchart der skal bruges tal for at den her kan laves.
-clear()
-for index in range(0,len(data)):
-value = int( data[index][1] )
-  rect(100, 250+index*30, value*30, 30-1, 255,100,100) # orange farve
+mycursor = mydb.cursor()
+mycursor.execute("SHOW TABLES")
+myresult = mycursor.fetchall()
+
+print(df)
+
+app = Dash(__name__)
+
+# 2b- Decide the layout of your page
+app.layout = html.Div([
+    html.Div(children='Bla bla bla ... App with Data'),
+    
+    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
+
+    html.Div(children=[
+                    'Finally...',
+                    html.Br(), 
+                    html.A('Read more about data',
+                           href='https://www.safegraph.com/blog/more-data-doesnt-always-mean-better-data')
+                        ])
+    ])
+
+# 2c- start the HTTP server
+app.run()
