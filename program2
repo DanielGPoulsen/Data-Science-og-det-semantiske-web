@@ -25,3 +25,22 @@ df = pd.DataFrame.from_dict(
                     ["Title", "Actors", "Ratings", "Genre", "Awards"]
                     )
 print(df)
+
+# exit()
+
+# 2- run the Dash application
+
+# 2a- Initialize the app
+app = Dash(__name__)
+
+# 2b- Decide the layout of your page
+app.layout = html.Div([
+    html.Div(children='Bla bla bla ... App with Data'),
+    
+    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
+
+                        ])
+    ])
+
+# 2c- start the HTTP server
+app.run()
