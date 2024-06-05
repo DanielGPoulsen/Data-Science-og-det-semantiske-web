@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from json import *
 from urllib.request import *
+from medialib import *
 from csv import *
 import mysql.connector
 import ssl as ssl
@@ -17,30 +18,24 @@ my_db = mysql.connector.connect(
   database = "moviesRewards"
 )
 
-mycursor = my_db.cursor()
-mycursor.execute("SHOW TABLES")
-myresult = mycursor.fetchall()
+cursor = db.cursor()
 
-df = pd.DataFrame.from_dict(
-                    ["Title", "Actors", "Ratings", "Genre", "Awards"]
-                    )
-print(df)
+# Forespørgsel for at hente filmdataene
+cursor.execute("SELECT title, genre, awards, actors, ratings FROM movies")
 
-# exit()
+# Hent alle rækker
+movies = cursor.fetchall()
 
-# 2- run the Dash application
+# Luk forbindelsen
+cursor.close()
+db.close()
 
-# 2a- Initialize the app
-app = Dash(__name__)
+# Opret en tabel ved hjælp af medialib
+table = Table()
+table.add_header("Title", "Genre", "Release Year", "Director")
 
-# 2b- Decide the layout of your page
-app.layout = html.Div([
-    html.Div(children='Bla bla bla ... App with Data'),
-    
-    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
+for movie in movies:
+    table.add_row(*movie)
 
-                        ])
-    ])
-
-# 2c- start the HTTP server
-app.run()
+# Print tabellen
+print(table)
