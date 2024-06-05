@@ -21,23 +21,6 @@ mycursor = mydb.cursor()
 mycursor.execute("SHOW TABLES")
 myresult = mycursor.fetchall()
 
-print(df)
-
-app = Dash(__name__)
-
-# 2b- Decide the layout of your page
-app.layout = html.Div([
-    html.Div(children='Bla bla bla ... App with Data'),
-    
-    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
-
-    html.Div(children=[
-                    'Finally...',
-                    html.Br(), 
-                    html.A('Read more about data',
-                           href='https://www.safegraph.com/blog/more-data-doesnt-always-mean-better-data')
-                        ])
-    ])
-
-# 2c- start the HTTP server
-app.run()
+df = pd.DataFrame.from_dict(
+                    [Title,Actors,Ratings,Awards,Genre]
+                    )
