@@ -17,10 +17,11 @@ my_db = mysql.connector.connect(
   database = "moviesRewards"
 )
 
-mycursor = mydb.cursor()
+mycursor = my_db.cursor()
 mycursor.execute("SHOW TABLES")
 myresult = mycursor.fetchall()
 
 df = pd.DataFrame.from_dict(
-                    [Title,Actors,Ratings,Awards,Genre]
+                    ["Title", "Actors", "Ratings", "Genre", "Awards"]
                     )
+print(df)
