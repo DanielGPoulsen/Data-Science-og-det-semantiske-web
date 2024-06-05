@@ -17,7 +17,11 @@ my_db = mysql.connector.connect(
   password="JokkeSQL",
   database = "moviesRewards"
 )
-
+mycursor = my_db.cursor()
+mycursor.execute("SELECT * FROM movies")
+myresult = mycursor.fetchall()
+for x in myresult:
+  print(x)
 cursor = db.cursor()
 
 # Forespørgsel for at hente filmdataene
