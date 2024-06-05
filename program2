@@ -1,6 +1,6 @@
 from dash import Dash, html, dash_table
 import pandas as pd
-
+import plotly.express as px
 from json import *
 from urllib.request import *
 from csv import *
