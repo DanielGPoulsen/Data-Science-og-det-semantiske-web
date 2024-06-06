@@ -1,0 +1,51 @@
+from dash import Dash, html, dash_table
+import pandas as pd
+from medialib import *
+initialize()
+
+
+import mysql.connector
+import ssl as ssl
+context = ssl.create_default_context()
+context.check_hostname=False
+context.verify_mode = ssl.CERT_NONE
+
+my_db = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="JokkeSQL",
+  database = "moviesRewards"
+)
+
+mycursor = my_db.cursor()
+mycursor.execute("SELECT * FROM movies")
+myresult = mycursor.fetchall()
+
+df = pd.DataFrame.from_dict(
+                    [myresult]
+                    )
+
+print(df)
+# exit()
+
+# 2- run the Dash application
+
+# 2a- Initialize the app
+app = Dash(__name__)
+
+# 2b- Decide the layout of your page
+app.layout = html.Div([
+    html.Div(children='Bla bla bla ... App with Data'),
+    
+    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
+
+    html.Div(children=[
+                    'Finally...',
+                    html.Br(), 
+                    html.A('Read more about data',
+                           href='https://www.safegraph.com/blog/more-data-doesnt-always-mean-better-data')
+                        ])
+    ])
+
+# 2c- start the HTTP server
+app.run()
