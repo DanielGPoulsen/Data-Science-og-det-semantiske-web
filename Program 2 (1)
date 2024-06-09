@@ -46,7 +46,7 @@ app.layout = html.Div([
 
 @app.callback(
     Output('movie-details', 'children'),
-    [Input('table', 'selected_rows'), Input('table', 'data')]
+    [Input('table', 'selected_rows'), Input('table', 'data')])
 
 def display_movie_details(selected_rows, rows):
     if selected_rows:
@@ -57,5 +57,4 @@ def display_movie_details(selected_rows, rows):
     return "Select a movie to see details."
 
 # 2c- start the HTTP server
-if __name__ == '__main__':
-    app.run_server(debug=True)
+app.run()
