@@ -1,4 +1,5 @@
 from dash import Dash, html, dash_table
+from dash.dependencies import Input, Output
 import pandas as pd
 import mysql.connector
 import ssl
@@ -45,9 +46,8 @@ app.layout = html.Div([
 
 @app.callback(
     Output('movie-details', 'children'),
-    [Input('table', 'selected_rows')],
-    [Input('table', 'data')]
-)
+    [Input('table', 'selected_rows'), Input('table', 'data')]
+
 def display_movie_details(selected_rows, rows):
     if selected_rows:
         selected_row = selected_rows[0]
