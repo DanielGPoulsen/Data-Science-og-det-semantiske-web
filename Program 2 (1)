@@ -1,5 +1,6 @@
-from dash import Dash, html, dash_table
+from dash import Dash, html, dash_table, dcc
 from dash.dependencies import Input, Output
+import plotly.express as px
 import pandas as pd
 import mysql.connector
 import ssl
@@ -21,6 +22,7 @@ myresult = mycursor.fetchall()
 
 column_names = [i[0] for i in mycursor.description]
 df = pd.DataFrame(myresult, columns=column_names)
+df['ratings'] = df['ratings'].str.extract(r'(\d+\.\d+)').astype(float)
 
 print(df)
 # exit()
@@ -31,6 +33,7 @@ print(df)
 app = Dash(__name__)
 
 # 2b- Decide the layout of your page
+fig1 = px.histogram(df, x='title', y='ratings', histfunc='sum')
 app.layout = html.Div([
         dash_table.DataTable(
             id='table',
@@ -42,6 +45,8 @@ app.layout = html.Div([
     ),
 
     html.Div(id='movie-details', style={'whiteSpace': 'pre-line'}),
+    
+    dcc.Graph(figure=fig1)
 ])
 
 @app.callback(
