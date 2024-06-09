@@ -1,11 +1,8 @@
 from dash import Dash, html, dash_table
 import pandas as pd
-from medialib import *
-initialize()
-
-
 import mysql.connector
-import ssl as ssl
+import ssl
+
 context = ssl.create_default_context()
 context.check_hostname=False
 context.verify_mode = ssl.CERT_NONE
@@ -21,9 +18,8 @@ mycursor = my_db.cursor()
 mycursor.execute("SELECT * FROM movies")
 myresult = mycursor.fetchall()
 
-df = pd.DataFrame.from_dict(
-                    [myresult]
-                    )
+column_names = [i[0] for i in mycursor.description]
+df = pd.DataFrame(myresult, columns=column_names)
 
 print(df)
 # exit()
@@ -35,17 +31,31 @@ app = Dash(__name__)
 
 # 2b- Decide the layout of your page
 app.layout = html.Div([
-    html.Div(children='Bla bla bla ... App with Data'),
-    
-    dash_table.DataTable( data=df.to_dict('records'), page_size=10),
+        dash_table.DataTable(
+            id='table',
+            columns=[{"name": col, "id": col} for col in df.columns],
+            data=df.to_dict('records'),
+            row_selectable='single',
+            selected_rows=[],
+            page_size=10
+    ),
 
-    html.Div(children=[
-                    'Finally...',
-                    html.Br(), 
-                    html.A('Read more about data',
-                           href='https://www.safegraph.com/blog/more-data-doesnt-always-mean-better-data')
-                        ])
-    ])
+    html.Div(id='movie-details', style={'whiteSpace': 'pre-line'}),
+])
+
+@app.callback(
+    Output('movie-details', 'children'),
+    [Input('table', 'selected_rows')],
+    [Input('table', 'data')]
+)
+def display_movie_details(selected_rows, rows):
+    if selected_rows:
+        selected_row = selected_rows[0]
+        movie = rows[selected_row]
+        details = f"Title: {movie['title']}\nGenre: {movie['genre']}\nActors: {movie['actors']}\nAwards: {movie['awards']}"
+        return details
+    return "Select a movie to see details."
 
 # 2c- start the HTTP server
-app.run()
+if __name__ == '__main__':
+    app.run_server(debug=True)
